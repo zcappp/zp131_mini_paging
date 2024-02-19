@@ -2,8 +2,8 @@ import React from "react"
 
 function render(ref) {
     const { props } = ref
-    if (!props.path || typeof props.path !== "string") return <div>请配置路径</div>
-    const x = ref.excA('$c.x.' + props.path)
+    if (!props.path || typeof props.path !== "string") return <div>请配置数据路径</div>
+    const x = ref.excA(props.path.startsWith("$c.x") ? props.path : "$c.x." + props.path)
     if (!x || !x.arr) return <div/>
     return <React.Fragment>        
         <a onClick={() => prev(ref, x)} className={x.skip ? "" : "disabled"}>{SVG.prev}</a>
