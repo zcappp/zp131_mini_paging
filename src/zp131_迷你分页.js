@@ -4,7 +4,7 @@ function render(ref) {
     const { props } = ref
     if (!props.path || typeof props.path !== "string") return <div>请配置数据路径</div>
     const x = ref.excA(props.path.startsWith("$c.x") ? props.path : "$c.x." + props.path)
-    if (!x || !x.arr) return <div/>
+    if (!x || !x.limit || !x.arr) return <div/>
     return <React.Fragment>        
         <a onClick={() => prev(ref, x)} className={x.skip ? "" : "disabled"}>{SVG.prev}</a>
         <span><input value={ref.input !== undefined ? ref.input : x.skip / x.limit + 1} onChange={e => onChange(ref, x, e)} type="number" className="zinput" autoComplete="off"/><span> / {Math.ceil(x.count / x.limit)}</span></span>
