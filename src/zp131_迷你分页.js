@@ -2,13 +2,13 @@ import React from "react"
 
 function render(ref) {
     const { props } = ref
-    if (!props.path || typeof props.path !== "string") return <div>请配置数据路径</div>
+    if (!props.path || typeof props.path !== "string") return ref.isDev ? <div>请配置数据路径</div> : ""
     const x = ref.excA(props.path.startsWith("$c.x") ? props.path : "$c.x." + props.path)
     if (!x || !x.limit || !x.arr) return <div/>
     return <React.Fragment>        
-        <a onClick={() => prev(ref, x)} className={x.skip ? "" : "disabled"}>{SVG.prev}</a>
-        <span><input value={ref.input !== undefined ? ref.input : x.skip / x.limit + 1} onChange={e => onChange(ref, x, e)} type="number" className="zinput" autoComplete="off"/><span> / {Math.ceil(x.count / x.limit)}</span></span>
-        <a onClick={() => next(ref, x)} className={x.count > x.skip + x.limit ? "" : "disabled"}>{SVG.next}</a>
+        <a onClick={() => prev(ref, x)} className={x.skip ? "ztoL" : "ztoL disabled"}/>
+        <span><input value={ref.input !== undefined ? ref.input : x.skip / x.limit + 1} onChange={e => {ref.input = parseInt(e.target.value); ref.render()}} onBlur={() => onChange(ref, x)} type="number" className="zinput" autoComplete="off"/><span> / {Math.ceil(x.count / x.limit)}</span></span>
+        <a onClick={() => next(ref, x)} className={x.count > x.skip + x.limit ? "ztoR" : "ztoR disabled"}/>
     </React.Fragment>
 }
 
@@ -26,8 +26,7 @@ function next(ref, x) {
     if (O.skip < x.count) search(ref, x, O)
 }
 
-function onChange(ref, x, e) {
-    ref.input = e.target.value
+function onChange(ref, x) {
     let O = JSON.parse(x.option)
     O.skip = (parseInt(ref.input || 1) - 1) * x.limit
     if (O.skip >= 0 && O.skip < x.count) search(ref, x, O)
@@ -42,28 +41,27 @@ function search(ref, x, O) {
 
 const css = `
 .zp131 {
-    text-align: center;
-    margin: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 2em 0;
 }
-.zp131 > a,
+.zp131 > a {
+    
+}
+.zp131 > a:not(.disabled):hover {
+    color: var(--main-color) !important;
+}
 .zp131 > span {
-    padding: 0 9px;
-}
-.zp131 > span > span {
-    vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 .zp131 input {
     width: 45px;
     text-align: center;
     padding: 2px;
     height: 100%;
-}
-.zp131 svg:hover {
-    color: #1890ff;
-}
-.zp131 .disabled svg {
-    fill: silver;
-    cursor: not-allowed;
 }
 `
 
@@ -77,7 +75,7 @@ $plugin({
     }, {
         prop: "onPageChanged",
         type: "exp",
-        label: "onPageChanged"
+        label: "翻页表达式"
     }],
     render,
     css
